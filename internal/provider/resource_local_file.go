@@ -72,6 +72,11 @@ func resourceLocalFile() *schema.Resource {
 }
 
 func resourceLocalFileRead(d *schema.ResourceData, _ interface{}) error {
+	// If remote and current file paths are different, always recreate.
+	if d.HasChange("filename") {
+		return nil
+	}
+
 	// If the output file doesn't exist, mark the resource for creation.
 	outputPath := d.Get("filename").(string)
 	if _, err := os.Stat(outputPath); os.IsNotExist(err) {
